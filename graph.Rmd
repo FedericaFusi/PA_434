@@ -1,0 +1,93 @@
+---
+title: "Graphs"
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=T, results='hide', include=FALSE}
+install.packages("gapminder", repos="https://cran.cnr.berkeley.edu")
+library("gapminder")
+
+install.packages("ggplot2", repos="https://cran.cnr.berkeley.edu")
+library("ggplot2")
+
+install.packages("gganimate", repos="https://cran.cnr.berkeley.edu")
+library("gganimate")
+```
+
+```{r opening, fig.cap="Designed by [Allison Horst](https://twitter.com/allison_horst), @allison_horst", out.width='60%', echo=F }
+knitr::include_graphics( "FIGURE/ggplot2.png" )
+```
+
+There are several packages that can be used in R to create graphs. The most famous one is called ggplot2.
+
+All R packages are freely available online. You just need to install them in your R workspace. Once installed, all your packages are saved in a "library" from where you can retrieve them when needed. 
+
+```{r eval = F}
+install.packages("ggplot2", repos="https://cran.cnr.berkeley.edu")
+library("ggplot2")
+```
+
+As a first example we can imagine that the city is creating a new bus stop for students at a local university, which is supposed to shorten commuting time for students. 
+
+We sample 5 students and collect information about their commuting time before and after the new bus stop and we store them in a dataframe.
+
+```{r}
+
+students <- c("Annie", "Sam", "Sallie", "Tom", "Amanda", "Annie", "Sam", "Sallie", "Tom", "Amanda")
+
+commuting_time <- c(14, 7, 23, 8, 9, 10, 5, 18, 5, 4) 
+
+day <- c(rep("Pre", 5), rep("Post", 5))
+
+data <- as.data.frame(cbind(students, commuting_time, day))
+
+data
+```
+
+```{r echo=T, results='hide', include=FALSE}
+data$commuting_time = as.numeric(levels(data$commuting_time))[data$commuting_time]
+data$day = factor(data$day,levels(data$day)[c(2,1)])
+```
+
+Now we can use ggplot to create an interactive graph that shows how the commuting time has decreased after the bus stop has been implemented.
+
+```{r}
+ggplot(data, aes(y=commuting_time, x=students, fill=day)) + 
+
+    geom_bar(position="dodge", stat="identity", color="white") + 
+
+    labs(x        = "Students", 
+         y        = "Commuting Time", 
+         title    = 'Commuting Time:{closest_state} ',
+	      subtitle = "Very Cool Graph in R", 
+         caption  = "Source: PPOL506") +
+
+    scale_fill_manual(values = c("darkred", "darkblue")) +
+
+    theme(plot.title    = element_text(face = "bold", size = 14), 
+          plot.subtitle = element_text(face = "italic", size = 12),
+          axis.text     = element_text(size=12)) + 
+
+     transition_states(day, transition_length = 16, state_length = 16) +
+     exit_shrink() + 
+     enter_grow() +
+
+     ease_aes('sine-in-out')
+```
+
+```{r}
+
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+       geom_point(alpha = 0.7, show.legend = FALSE) +
+       scale_colour_manual(values = country_colors) +
+       scale_size(range = c(2, 12)) +
+       scale_x_log10() +
+       facet_wrap(~continent) +
+       
+       # Here comes the gganimate specific bits
+       labs(title = 'Year: {frame_time}', subtitle = 'Source: https://github.com/thomasp85/gganimate', x = 'GDP per        capita', y = 'life expectancy') +
+       transition_time(year) +
+       ease_aes('linear')
+```
