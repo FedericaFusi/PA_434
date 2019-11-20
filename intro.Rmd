@@ -1,0 +1,462 @@
+---
+title: "An Introduction to R"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r opening, fig.cap="Designed by [Allison Horst](https://twitter.com/allison_horst), @allison_horst", out.width='60%', echo=F }
+knitr::include_graphics( "FIGURE/R_Difficulty.png" )
+```
+
+To facilitate this introduction and avoid installing R on your computer, we will use an interactive version of R provided by [DataCamp](https://www.datacamp.com/). Interactive windows (1) allows to have part of the code already written down, which is convenient for this introduction and (2) do not require you to install R on your computer. The same codes that we'll learn today can be used on a standalone R application such as [RStudio](https://www.rstudio.com/). 
+
+Below you can see an example of an interactive R window. On the left side of the window (under the tab titled *script.R*) is where you will write code to be executed. To run code you have written, click the yellow *Run* button and observe how the right side of the window gets filled with information. A copy of your code will show up in black, and if no errors were made the answer will be returned right below in brown text. Error messages are red and begin with *Error:*. 
+
+<div class="alert alert-info">
+If you want to install R on your computer in the future, you can find some good instruction [here](https://datavizf18.classes.andrewheiss.com/install/). 
+
+You can also use an online version of R [here](https://rstudio.cloud/)
+</div>
+
+## Quick intro to R
+
+```{r echo=T, results='hide', include=FALSE}
+install.packages("gapminder", repos="https://cran.cnr.berkeley.edu")
+library("gapminder")
+
+install.packages("ggplot2", repos="https://cran.cnr.berkeley.edu")
+library("ggplot2")
+
+install.packages("gganimate", repos="https://cran.cnr.berkeley.edu")
+library("gganimate")
+
+install.packages("plotly", repos="https://cran.cnr.berkeley.edu")
+library("plotly")
+
+install.packages("scales", repos="https://cran.cnr.berkeley.edu")
+library("scales")
+```
+
+R is built as a simple calculator. You can perform basic artimethic operations as shown below (click on the yellow Run button).
+
+```{r, include=FALSE}
+tutorial::go_interactive(height = 160)
+```
+
+```{r}
+2+3
+
+2*3
+
+6 / 3
+
+3 - 2
+```
+<br>
+The advantage of R is that you can save multiple information into "objects" and use them to perform operations. "Objects" are just repository of information - numbers, text, images.. We can assign any name to an object. We assign content to an object using *<-*. 
+
+
+```{r, include=FALSE}
+tutorial::go_interactive(height = 160)
+```
+
+```{r}
+
+object1 <- 2
+
+object2 <- 3
+
+object1 + object2
+
+```
+<br>
+Objects are particularly useful to store multiple information at the same time. For instance, let's create two objects. The first object will store the names of 5 of you. The second will store information on how long it takes to these students to get to UIC. Some notes to know:
+
+**Code**                          | **Meaning**                                               | 
+----------------------------------| ------------------------------------------------------------------|
+2                                 |A piece of *numeric* information
+"Mary"                            |A piece of *text* information
+*vector_name* <- c()              |Combines multiple pieces of information into one *vector*
+*matrix_name* <- cbind()          |Combines multiple vectors into a *matrix*                                     
+*dataframe_name* <- as.data.frame |Convert a matrix into a *dataframe* which are databases in R (most common format)
+
+<br>
+
+```{r, include=FALSE}
+tutorial::go_interactive(height = 160)
+```
+
+```{r}
+
+# We can put comments on the code by using ##
+# Comments are important to remember what you did and why
+students <- c()
+year <- c()
+
+# We can retrieve the content of the objects 
+students
+year
+
+# Or we can combine them in one "bigger" object or data.frame. Dataframes are datasets in R
+data <- as.data.frame(cbind(students, year))
+
+data
+
+```
+
+<br>
+Objects can store as much information as we want - we are talking about millions of data! 
+
+To start, let's imagine we have a small dataframe which contains information about 5 students: their name and how many minutes it takes them to come to UIC. The dataframe is called *data*. 
+
+```{r ex="data", type="pre-exercise-code"}
+students <- c("Sam", "David", "Annie", "Kate", "Mary")
+commuting_time <- c(15, 6, 8, 9, 23)
+data = as.data.frame(cbind(students, as.numeric(commuting_time)))
+
+data$commuting_time = as.numeric(levels(data$V2))[data$V2]
+data$students = as.character(data$students)
+data$V2 <- NULL
+
+```
+
+```{r ex="data", type="sample-code"}
+
+data
+
+data$students
+
+data$commuting_time
+
+class(data$students)
+class(data$commuting_time)
+
+```
+
+We can look at the object but also use some "functions" to obtain more information. "Functions" in R are not very different from Excel functions - they are pre-packed codes that extract information from an object. 
+
+For instance, what is the average commuting time across all students? How long is the longest commuting time? And the shortest? 
+
+```{r ex="mean", type="pre-exercise-code"}
+students <- c("Sam", "David", "Annie", "Kate", "Mary")
+commuting_time <- c(15, 6, 8, 9, 23)
+data = as.data.frame(cbind(students, as.numeric(commuting_time)))
+
+data$commuting_time = as.numeric(levels(data$V2))[data$V2]
+data$students = as.character(data$students)
+data$V2 <- NULL
+
+```
+
+```{r ex="mean", type="sample-code"}
+
+mean(data$commuting_time)
+
+median(data$commuting_time)
+
+max(data$commuting_time)
+
+min(data$commuting_time)
+
+```
+<br> 
+We can also visualize data on a graph. In this case, a barplot will allow us to compare time across all students. 
+
+
+```{r, include=FALSE}
+tutorial::go_interactive(height = 400)
+```
+
+```{r ex="mean2", type="pre-exercise-code"}
+students <- c("Sam", "David", "Annie", "Kate", "Mary")
+commuting_time <- c(15, 6, 8, 9, 23)
+data = as.data.frame(cbind(students, as.numeric(commuting_time)))
+
+data$commuting_time = as.numeric(levels(data$V2))[data$V2]
+data$students = as.character(data$students)
+data$V2 <- NULL
+
+```
+
+```{r ex="mean2", type="sample-code"}
+
+barplot(commuting_time)
+
+```
+<br>
+We can customized graphs. R is really powerful in creating graphs - we can change colors, style, titles, labels... pretty much anything. Within each function, we have several "arguments" where we can change these settings.
+
+Let's look at some command to change title, labels, and colors. Feel free to customize the graph as you like.
+
+```{r, include=FALSE}
+tutorial::go_interactive(height = 400)
+```
+
+```{r ex="mean3", type="pre-exercise-code"}
+students <- c("Sam", "David", "Annie", "Kate", "Mary")
+commuting_time <- c(15, 6, 8, 9, 23)
+data = as.data.frame(cbind(students, as.numeric(commuting_time)))
+
+data$commuting_time = as.numeric(levels(data$V2))[data$V2]
+data$students = as.character(data$students)
+data$V2 <- NULL
+
+```
+
+```{r ex="mean3", type="sample-code"}
+
+barplot(commuting_time, 
+        main = "Commuting Time",  #Title of the graph
+        xlab = "Students",        #Label of the x axis
+        ylab = "Average time",    #Label of the y axis
+        col = "darkblue",         #Color of the bars
+        border = "white")         #Color of the border of the bars
+
+```
+<br>
+We can also add a line to show how many students have a longer than average commuting time. 
+
+```{r, include=FALSE}
+tutorial::go_interactive(height = 400)
+```
+
+```{r ex="mean4", type="pre-exercise-code"}
+students <- c("Sam", "David", "Annie", "Kate", "Mary")
+commuting_time <- c(15, 6, 8, 9, 23)
+data = as.data.frame(cbind(students, as.numeric(commuting_time)))
+
+data$commuting_time = as.numeric(levels(data$V2))[data$V2]
+data$students = as.character(data$students)
+data$V2 <- NULL
+
+```
+
+```{r ex="mean4", type="sample-code"}
+
+barplot(commuting_time, 
+        main = "Commuting Time", 
+        xlab = "Students", 
+        ylab = "Average time", 
+        col = "darkblue", 
+        border = "white")
+
+abline(h = mean(commuting_time), 
+       col = "darkred")
+```
+
+We can try another graph. In this case, we can plot the correlation between attendance and GPA. 
+
+- Look at the dataframe. The name is 'data_attendance'
+- What is the average attendance in the class? Attendance is expressed as percentage points.
+- What is the average GPA?
+- Plot the relationship between GPA and attendance. Instead than a barplot, we are going to use a scatterplot. The command is "plot". 
+- Pro-suggestion: once you created your scatterplot, if you want to change the shape of the dots, you can use the pch command and the table below (e.g., pch = 16)
+
+```{r dots, fig.cap="Shapes", out.width='20%', echo=F }
+knitr::include_graphics( "FIGURE/dots.png" )
+```
+
+```{r ex="corr", type="pre-exercise-code"}
+
+library(scales)
+set.seed(131)
+attendance = rnorm(25, 20, 10)
+gpa = 0.43 + 0.57*attendance + rnorm(25, 2, 1)
+
+gpa = rescale(gpa, to = c(1, 4))
+attendance = rescale(attendance, to = c(20, 100))
+
+data_attendance = as.data.frame(cbind(gpa, attendance))
+```
+
+```{r ex="corr", type="sample-code"}
+
+plot()
+    
+```
+
+```{r ex="corr", type="solution"}
+
+plot(attendance, gpa,
+     main = "Correlation between attendance and GPA", 
+     xlab = "Attendance",    
+     ylab = "GPA",    
+     col = "darkblue",        
+     pch = 16)    
+
+```
+
+## Regression 
+
+We can also use R to run a simple regression. 
+
+```{r echo=T, results='hide', include=FALSE}
+
+library(scales)
+set.seed(131)
+attendance = rnorm(25, 20, 10)
+gpa = 0.43 + 0.57*attendance + rnorm(25, 2, 1)
+
+gpa = rescale(gpa, to = c(1, 4))
+attendance = rescale(attendance, to = c(20, 100))
+
+data_attendance = as.data.frame(cbind(gpa, attendance))
+```
+
+```{r tut = FALSE}
+
+my_regression <- lm( gpa ~ attendance, data = data_attendance)
+
+summary(my_regression)
+```
+
+And again, we can plot our correlation using a scatterplot and including a regression line. 
+
+```{r tut = FALSE}
+
+plot(attendance, gpa,
+     main = "Correlation between attendance and GPA", 
+     xlab = "Attendance",    
+     ylab = "GPA",    
+     col = "darkblue",        
+     pch = 16) 
+
+abline(my_regression,
+       col = "darkred")
+```
+
+Now it's your turn. I have uploaded some data called *data_enrollment* which includes two variables: income and college_enrollment.
+
+- Look at the average value of both income and college_enrollment
+- Run a regression that predict the likelihood to enroll into college based on income
+- Plot your observations and regression line - make the dot into a squared shape, colored red, with a regression line in green.
+
+```{r ex="reg", type="pre-exercise-code"}
+
+library(scales)
+set.seed(197)
+income = rnorm(25, 20, 10)
+college_enrollment = 0.67 + 0.57*income + rnorm(25, 2, 6)
+
+income = rescale(income, to = c(10000, 200000))
+college_enrollment = rescale(college_enrollment, to = c(0, 100))
+
+data_enrollment = as.data.frame(cbind(income, college_enrollment))
+```
+
+```{r ex="reg", type="sample-code"}
+
+my_regression <- lm()
+
+summary(my_regression)
+    
+```
+
+```{r ex="reg", type="solution"}
+my_regression <- lm(college_enrollment ~ income, data = data_enrollment)
+
+summary(my_regression)
+
+plot(income, college_enrollment,
+     main = "Correlation between income and enrollment to college", 
+     xlab = "Income",    
+     ylab = "College Enrollment",    
+     col = "darkred",        
+     pch = 15) 
+
+abline(my_regression,
+       col = "forestgreen")
+```
+
+## Some notes
+
+Something that might be helpful is to learn how to upload your own data. The easiest way is to save them in a .csv file. 
+
+```{r, echo=TRUE, tut=FALSE}
+
+# First you need to set your working directory (setwd)
+setwd("C:/Users/ffusi/Box/Website/PPOL405_Website")
+
+#Then you read your csv data. Remember to name them.
+my_data <- read.csv("CityData.csv")
+
+#Look at your data. 
+my_data
+```
+
+
+```{css, echo=F}
+
+.powered-by-datacamp {
+  display: none !important;
+}
+
+.datacamp-exercise {
+  margin: 0 0 1em 0 !important;
+}
+
+p {
+color: black;
+margin: 0 0 20px 0;
+}
+
+p.caption {
+    text-align: center;
+    font-style: italic;
+}
+
+td {
+    padding: 3px 10px 3px 10px;
+    }
+
+table
+{ 
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+
+h1, h2{
+  margin-top:100px;
+  margin-bottom:20px;
+}
+
+H5{
+    text-align: center;
+    color: gray;
+    font-size:0.8em;
+}
+
+img {
+    max-width: 90%;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top:30px;
+    margin-bottom:20px;
+}
+
+pre {
+  overflow-x: auto;
+}
+
+pre code {
+   display: block; 
+   padding: 0.5em;
+   margin-bottom:20px;
+}
+
+code {
+  font-size: 92%;
+  border: 10px solid #F8F8F8;
+  margin-bottom: 2px;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+```

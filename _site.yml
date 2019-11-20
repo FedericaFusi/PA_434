@@ -1,0 +1,11 @@
+navbar:
+  title: "Introduction to R"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Intro to R"
+      href: intro.html
+    - text: "Graphs"
+      href: graph.html
+    - text: "Resources"
+      href: resources.html
