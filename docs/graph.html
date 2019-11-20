@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Graphs &amp; Animation: ggplot2</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Introduction to R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="intro.html">Intro to R</a>
+</li>
+<li>
+  <a href="graph.html">Graphs</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Graphs &amp; Animation: ggplot2</h1>
+
+</div>
+
+
+<script src="https://cdn.datacamp.com/datacamp-light-latest.min.js"></script>
+<div class="figure" style="text-align: center">
+<img src="FIGURE/ggplot2.png" alt="Designed by [Allison Horst](https://twitter.com/allison_horst), @allison_horst" width="60%" />
+<p class="caption">
+Designed by <a href="https://twitter.com/allison_horst">Allison Horst</a>, <span class="citation">@allison_horst</span>
+</p>
+</div>
+<p>There are several packages that can be used in R to create graphs. The most famous one is called <strong>ggplot2</strong>.</p>
+<p>All R packages are freely available online. You just need to install them in your R workspace. Once installed, all your packages are saved in a “library” from where you can retrieve them when needed.</p>
+<pre class="r"><code>install.packages(&quot;ggplot2&quot;, repos=&quot;https://cran.cnr.berkeley.edu&quot;)
+library(&quot;ggplot2&quot;)</code></pre>
+<div id="graphs" class="section level2">
+<h2>Graphs</h2>
+<p>The package <strong>ggplot2</strong> is better at creating graphs and we can include more arguments in our functions, so that we can personalize the graph.</p>
+<pre class="r"><code>students &lt;- c(&quot;Sam&quot;, &quot;David&quot;, &quot;Annie&quot;, &quot;Kate&quot;, &quot;Mary&quot;)
+commuting_time &lt;- c(15, 6, 8, 9, 23)
+data = as.data.frame(cbind(students, as.numeric(commuting_time)))</code></pre>
+<pre class="r"><code>my_super_cool_plot &lt;- ## Call your data and identify the x &amp; y axis
+                      ggplot(data, aes(x = students, y = commuting_time)) +
+                      
+                      ## Set the colors for each of your bar
+                      geom_col(fill = c(&quot;slategrey&quot;, &quot;royalblue2&quot;, &quot;darkred&quot;, &quot;gold&quot;, &quot;orange&quot;)) +
+                      
+                      ## Add labels and set the color that &quot;fills&quot; the labels
+                      geom_label(aes(label = commuting_time), fill = &quot;white&quot;) + 
+                        
+                      ## Do you want to have a background?
+                      guides(fill = FALSE) + 
+                      
+                      ## Set labels for the axis, title, subtitle, and caption
+                      labs(x = NULL, 
+                           y = &quot;Percent&quot;, 
+                           title = &quot;Commuting time plot&quot;,
+                           subtitle = &quot;PPOL405 - Intro to R&quot;, 
+                           caption = &quot;Source &amp; Other examples: https://datavizf18.classes.andrewheiss.com/class/05-class/&quot;) +
+                      
+                      ## Size and font of the labels
+                      theme(plot.title = element_text(face = &quot;bold&quot;, size = 14), 
+                                  plot.subtitle = element_text(face = &quot;italic&quot;, size = 12),
+                            axis.text = element_text(size=12))
+
+
+my_super_cool_plot</code></pre>
+<p><img src="graph_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div data-datacamp-exercise="" data-height="400" data-encoded="true">
+eyJsYW5ndWFnZSI6InIiLCJwcmVfZXhlcmNpc2VfY29kZSI6InN0dWRlbnRzIDwtIGMoXCJTYW1cIiwgXCJEYXZpZFwiLCBcIkFubmllXCIsIFwiS2F0ZVwiLCBcIk1hcnlcIilcbmNvbW11dGluZ190aW1lIDwtIGMoMTUsIDYsIDgsIDksIDIzKVxuZGF0YSA9IGFzLmRhdGEuZnJhbWUoY2JpbmQoc3R1ZGVudHMsIGFzLm51bWVyaWMoY29tbXV0aW5nX3RpbWUpKSlcblxuZGF0YSRjb21tdXRpbmdfdGltZSA9IGFzLm51bWVyaWMobGV2ZWxzKGRhdGEkVjIpKVtkYXRhJFYyXVxuZGF0YSRWMiA8LSBOVUxMIiwic2FtcGxlIjoibGlicmFyeShnZ3Bsb3QyKVxuZGF0YSJ9
+</div>
+<p>We can also animate graphs. We can imagine that the city is creating a new bus stop for students at a local university, which is supposed to shorten commuting time for students.</p>
+<p>We sample 5 students and collect information about their commuting time before and after the new bus stop and we store them in a dataframe. You should be familiar with these commands!</p>
+<pre class="r"><code>students &lt;- c(&quot;Annie&quot;, &quot;Sam&quot;, &quot;Sallie&quot;, &quot;Tom&quot;, &quot;Amanda&quot;, &quot;Annie&quot;, &quot;Sam&quot;, &quot;Sallie&quot;, &quot;Tom&quot;, &quot;Amanda&quot;)
+
+commuting_time &lt;- c(14, 7, 23, 8, 9, 10, 5, 18, 5, 4) 
+
+day &lt;- c(rep(&quot;Pre&quot;, 5), rep(&quot;Post&quot;, 5))
+
+data &lt;- as.data.frame(cbind(students, commuting_time, day))
+
+data</code></pre>
+<pre><code>##    students commuting_time  day
+## 1     Annie             14  Pre
+## 2       Sam              7  Pre
+## 3    Sallie             23  Pre
+## 4       Tom              8  Pre
+## 5    Amanda              9  Pre
+## 6     Annie             10 Post
+## 7       Sam              5 Post
+## 8    Sallie             18 Post
+## 9       Tom              5 Post
+## 10   Amanda              4 Post</code></pre>
+<p>Now we can use ggplot to create an interactive graph that shows how the commuting time has decreased after the bus stop has been implemented.</p>
+<pre class="r"><code>commtime &lt;- ggplot(data, aes(y=commuting_time, x=students, fill=day)) + 
+
+       geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;, color=&quot;white&quot;) + 
+
+       labs(x        = &quot;Students&quot;, 
+            y        = &quot;Commuting Time&quot;, 
+            title    = &#39;Commuting Time:{closest_state} &#39;,
+              subtitle = &quot;Very Cool Graph in R&quot;, 
+            caption  = &quot;Source: PPOL405&quot;) +
+
+      scale_fill_manual(values = c(&quot;darkred&quot;, &quot;darkblue&quot;)) +
+
+      theme(plot.title    = element_text(face = &quot;bold&quot;, size = 14), 
+            plot.subtitle = element_text(face = &quot;italic&quot;, size = 12),
+            axis.text     = element_text(size=12)) + 
+
+      transition_states(day, transition_length = 16, state_length = 16) +
+      exit_shrink() + 
+      enter_grow() +
+
+      ease_aes(&#39;sine-in-out&#39;)
+
+anim_save(&quot;commtime.gif&quot;, commtime)</code></pre>
+<p><img src="FIGURE/commtime.gif" /></p>
+<pre class="r"><code>gm &lt;- ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+       geom_point(alpha = 0.7, show.legend = FALSE) +
+       scale_colour_manual(values = country_colors) +
+       scale_size(range = c(2, 12)) +
+       scale_x_log10() +
+       facet_wrap(~continent) +
+       
+       # Here comes the gganimate specific bits
+       labs(title    = &#39;Year: {frame_time}&#39;, 
+            subtitle = &#39;Source: https://github.com/thomasp85/gganimate&#39;, 
+            x        = &#39;GDP per capita&#39;, 
+            y        = &#39;life expectancy&#39;) +
+       transition_time(year) +
+       ease_aes(&#39;linear&#39;)
+
+anim_save(&quot;gm.gif&quot;, gm)</code></pre>
+<p><img src="FIGURE/gm.gif" /></p>
+<style type="text/css">
+
+.powered-by-datacamp {
+  display: none !important;
+}
+
+.datacamp-exercise {
+  margin: 0 0 1em 0 !important;
+}
+
+p {
+color: black;
+margin: 0 0 20px 0;
+}
+
+p.caption {
+    text-align: center;
+    font-style: italic;
+}
+
+td {
+    padding: 3px 10px 3px 10px;
+    }
+
+table
+{ 
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+
+h1, h2{
+  margin-top:100px;
+  margin-bottom:20px;
+}
+
+H5{
+    text-align: center;
+    color: gray;
+    font-size:0.8em;
+}
+
+img {
+    max-width: 90%;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top:30px;
+    margin-bottom:20px;
+}
+
+pre {
+  overflow-x: auto;
+}
+
+pre code {
+   display: block; 
+   padding: 0.5em;
+   margin-bottom:20px;
+}
+
+code {
+  font-size: 92%;
+  border: 10px solid #F8F8F8;
+  margin-bottom: 2px;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+</style>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
