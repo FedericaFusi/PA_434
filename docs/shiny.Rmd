@@ -1,0 +1,124 @@
+---
+title: "Shiny App Demo"
+runtime: shiny
+---
+
+# Intro to Shiny Widgets
+
+<div class="alert alert-info">
+This content was created by Dr. Jesse Lecy as part of the ["Intro to data science"](https://ds4ps.org/course_website/assignments/#labs) class at ASU
+</div>
+
+
+Shiny apps have two parts: a user interface (page layouts and input functions), and a set of rendering functions that translate R graphics into HTML and javascript elements to create interactive web pages.
+
+* `inputPanel` or `sidebarPanel` creates a panel for the widgets
+* `input` functions allow users to specify inputs
+* `renderPlot` converts to HTML / javascript
+
+When using Shiny, a global object called "input" will be created, and it stores the input values the user defines in slots created through the `inputId` arguments. For example, below we use "animal" for the `inputID`, so the input values are referenced at `input$animal`.
+
+
+```{r}
+
+selectInput( 
+             inputId='animal', 
+             label='Select Animal', 
+             choices=c("cat","dog","rat"),
+             selected="dog"
+           )
+    
+renderPlot({
+
+    plot.new()
+    plot.window( xlim=c(0,10), ylim=c(0,10) )
+    box()
+    
+    text( 5, 5, label=input$animal, cex=4 )  # global object "input"
+    
+    title( main="My Favorite Animal Is A:", line=-2 )
+
+})
+
+```
+
+Add a panel for the widget.
+
+```{r}
+
+inputPanel(
+ 
+     selectInput( inputId='animal.02', 
+                  label='Select Animal', 
+                  choices=c("cat","dog","rat"),
+                  selected="dog"
+                ),
+     
+     selectInput( inputId='color', 
+                  label='Select Color', 
+                  choices=c("steelblue","darkred","orange"),
+                  selected="orange"
+                ),
+
+     selectInput( inputId='size', 
+                  label='Select Size', 
+                  choices=c(1,2,3,4,5,6,7,8,9),
+                  selected=4
+                )  
+     
+) # end inputPanel
+
+
+renderPlot({
+
+    plot.new()
+    plot.window( xlim=c(0,10), ylim=c(0,10) )
+    box()
+    
+    # global object "input" stores all values in slots using their inputId's above
+    # inputId='animal.02'
+    # inputId='color'
+    # inputId='size'
+    text( 5, 5, label=input$animal.02, cex=as.numeric(input$size), col=input$color )  
+    
+    title( main="My Favorite Animal Is A:", line=-2 )
+
+})
+
+```
+  
+Use the argument `echo=F` in your chunk header to hide the code when you render the widget in a markdown document.  
+```{r, echo=F}
+
+
+ 
+selectInput( 
+             inputId='animal2', 
+             label='Select Animal', 
+             choices=c("cat","dog","rat"),
+             selected="dog"
+           )
+    
+
+
+
+
+renderPlot({
+
+    plot.new()
+    plot.window( xlim=c(0,10), ylim=c(0,10) )
+    box()
+    
+    text( 5, 5, label=input$animal2, cex=4 )
+    
+    title( main="My Favorite Animal Is A:", line=-2 )
+
+})
+
+```
+     
+
+ 
+ 
+ 
+ 
